@@ -5,15 +5,12 @@ class_name Projectile
 var owner_id : int
 
 func _ready() -> void:
-	if not multiplayer.is_server():
-		set_physics_process(false)
+	pass
 
 func _physics_process(delta: float) -> void:
 	position += -transform.y * speed * delta
 
 func _on_body_entered(body: Player) -> void:
-	if not multiplayer.is_server():
-		return
 	if not body.is_in_group("Player"):
 		return
 	if body.player_id == owner_id:
@@ -23,5 +20,4 @@ func _on_body_entered(body: Player) -> void:
 	self.queue_free()
 
 func _on_timer_timeout() -> void:
-	if multiplayer.is_server():
-		queue_free()
+	queue_free()

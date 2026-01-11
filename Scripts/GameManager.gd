@@ -28,7 +28,7 @@ func on_player_die(player_id: int, attacker_id: int) -> void:
 	attacker.increase_score(1)
 	
 	if attacker.score >= score_to_win:
-		end_game_clients.rpc(attacker.player_name)
+		end_game(attacker.player_name)
 		
 
 func get_player(player_id: int) -> Player:
@@ -42,22 +42,15 @@ func reset_game() -> void:
 	for player in players:
 		player.respawn()
 		player.score = 0
-	reset_game_clients.rpc()
+	reset_game_ui()
 
-func get_random_position() -> Vector2:
-	var x = randf_range(border_min_x, border_max_x)
-	var y = randf_range(border_min_y, border_max_y)
-	return Vector2(x, y)
-
-@rpc("authority", "call_local", "reliable")
-func reset_game_clients() -> void:
+func reset_game_ui() -> void:
 	end_screen.visible = false
 
-@rpc("authority", "call_local", "reliable")
-func end_game_clients(winner_name: String) -> void:
+func end_game(winner_name: String) -> void:
 	end_screen.visible = true
 	win_text.text = str(winner_name, " has won!")
-	play_again_button.visible = multiplayer.is_server()
+	play_again_button.visible = true
 
 func _on_play_again_button_pressed() -> void:
 	reset_game()
